@@ -14,13 +14,12 @@ class SocketMaster {
   static const _channelBase = FlutterP2p.channelBase;
 
   var _socketReadChannel = EventChannel("$_channelBase/socket/read");
-  final MethodChannel _methodChannel;
 
   Map<int, P2pSocket> sockets = {};
 
   Stream<SocketMessage> _readStream;
 
-  SocketMaster(this._methodChannel) {
+  SocketMaster() {
     _readStream = _socketReadChannel.receiveBroadcastStream().map((a) {
       try {
         return SocketMessage.fromBuffer(a);
