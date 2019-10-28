@@ -1,3 +1,6 @@
+[![GitHub license](https://img.shields.io/github/license/mintware-de/flutter_p2p.svg)](https://github.com/mintware-de/flutter_p2p/blob/master/LICENSE)
+[![Pub](https://img.shields.io/pub/v/flutter_p2p.svg)](https://pub.dartlang.org/packages/flutter_p2p)
+
 # flutter_p2p
 
 A Wi-Fi Direct Plugin for Flutter.
