@@ -16,7 +16,7 @@ class FlutterP2p {
   static const _channel = const MethodChannel('$channelBase/flutter_p2p');
 
   static WiFiDirectBroadcastReceiver wifiEvents = WiFiDirectBroadcastReceiver();
-  static SocketMaster _socketMaster = SocketMaster(_channel);
+  static SocketMaster _socketMaster = SocketMaster();
 
   //region Permissions
 
