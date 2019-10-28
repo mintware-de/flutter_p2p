@@ -1,0 +1,84 @@
+// protoc --dart_out=./lib/gen ./protos/protos.proto
+// protoc --swift_out=./ios/gen ./protos/protos.proto
+
+syntax = "proto3";
+
+// `java_package` should match the package name you declare for `androidPackage` in your pubspec.yaml
+option java_package = "de.mintware.flutter_p2p";
+
+message StateChange {
+    bool isEnabled = 1;
+}
+
+message WifiP2pDevice {
+    bool wpsPbcSupported = 1;
+    bool wpsKeypadSupported = 2;
+    bool wpsDisplaySupported = 3;
+    bool isServiceDiscoveryCapable = 4;
+    bool isGroupOwner = 5;
+
+    string deviceName = 6;
+    string deviceAddress = 7;
+    string primaryDeviceType = 8;
+    string secondaryDeviceType = 9;
+
+    Status status = 10;
+
+    enum Status {
+        CONNECTED = 0;
+        INVITED = 1;
+        FAILED = 2;
+        AVAILABLE = 3;
+        UNAVAILABLE = 4;
+    }
+}
+
+message WifiP2pDeviceList {
+    repeated WifiP2pDevice devices = 1;
+}
+
+message ConnectionChange {
+    WifiP2pInfo wifiP2pInfo = 1;
+    NetworkInfo networkInfo = 2;
+}
+
+message WifiP2pInfo {
+    bool groupFormed = 1;
+    bool isGroupOwner = 2;
+    string groupOwnerAddress = 3;
+}
+
+message NetworkInfo {
+
+    int32 subType = 1;
+    bool isConnected = 2;
+    DetailedState detailedState = 3;
+    string extraInfo = 4;
+
+    enum DetailedState {
+        IDLE = 0;
+        SCANNING = 1;
+        CONNECTING = 2;
+        AUTHENTICATING = 3;
+        OBTAINING_IPADDR = 4;
+        CONNECTED = 5;
+        SUSPENDED = 6;
+        DISCONNECTING = 7;
+        DISCONNECTED = 8;
+        FAILED = 9;
+        BLOCKED = 10;
+        VERIFYING_POOR_LINK = 11;
+        CAPTIVE_PORTAL_CHECK = 12;
+    }
+}
+
+message RequestPermissionResult {
+    int32 requestCode = 1;
+    repeated string grantedPermissions = 2;
+}
+
+message SocketMessage {
+    int32 port = 1;
+    int32 dataAvailable = 2; // The number of bytes which are still available
+    bytes data = 3; // The data
+}
