@@ -76,6 +76,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           "deviceChange: ${change.deviceName} / ${change.deviceAddress} / ${change.primaryDeviceType} / ${change.secondaryDeviceType} ${change.isGroupOwner ? 'GO' : '-GO'}");
     }));
 
+    _subscriptions.add(FlutterP2p.wifiEvents.discoveryChange.listen((change) {
+      print("discoveryStateChange: ${change.isDiscovering}");
+    }));
+
     _subscriptions.add(FlutterP2p.wifiEvents.peersChange.listen((change) {
       print("peersChange: ${change.devices.length}");
       change.devices.forEach((device) {
