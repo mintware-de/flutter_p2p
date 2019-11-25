@@ -10,6 +10,7 @@ This plugin is in alpha and only supports android at the moment.
 ## Getting Started
 
 ### Required permissions
+
 - `android.permission.CHANGE_WIFI_STATE`
 - `android.permission.ACCESS_FINE_LOCATION`
 - `android.permission.ACCESS_COARSE_LOCATION`
@@ -19,7 +20,9 @@ This plugin is in alpha and only supports android at the moment.
 - `android.permission.ACCESS_WIFI_STATE`
 
 ### Request permission
+
 In order to scan for devices and connect to devices you need to ask for the location Permission
+
 ```dart
 Future<bool> _checkPermission() async {
   if (!await FlutterP2p.isLocationPermissionGranted()) {
@@ -31,8 +34,10 @@ Future<bool> _checkPermission() async {
 ```
 
 ### Register / unregister from WiFi events
+
 To receive notifications for connection changes or device changes (peers discovered etc.) you have
 to subscribe to the wifiEvents and register the plugin to the native events.
+
 ```dart
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
@@ -51,7 +56,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // Stop handling events when the app doesn't run to prevent battery draining
-    
+
     if (state == AppLifecycleState.resumed) {
       _register();
     } else if (state == AppLifecycleState.paused) {
@@ -66,7 +71,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       return;
     }
     _subscriptions.add(FlutterP2p.wifiEvents.stateChange.listen((change) {
-      // Handle wifi state change 
+      // Handle wifi state change
     }));
 
     _subscriptions.add(FlutterP2p.wifiEvents.connectionChange.listen((change) {
@@ -81,6 +86,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       // Handle discovered peers
     }));
 
+    _subscriptions.add(FlutterP2p.wifiEvents.discoveryChange.listen((change) {
+      // Handle discovery state changes
+    }));
+
     FlutterP2p.register();  // Register to the native events which are send to the streams above
   }
 
@@ -91,9 +100,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 }
 ```
 
-
 ### Discover devices
+
 After you subscribed to the events you only need to call the `FlutterP2p.discoverDevices()` method.
+
 ```dart
 
 List<WifiP2pDevice> _peers = [];
@@ -112,11 +122,12 @@ void _register() async {
 }
 
 void _discover() {
-  FlutterP2p.discoverDevices(); 
+  FlutterP2p.discoverDevices();
 }
 ```
 
 ### Connect to a device
+
 Call `FlutterP2p.connect(device);` and listen to the `FlutterP2p.wifiEvents.connectionChange`
 
 ```dart
@@ -141,9 +152,11 @@ Call `FlutterP2p.connect(device);` and listen to the `FlutterP2p.wifiEvents.conn
 ```
 
 ### Transferring data between devices
+
 After you are connected to a device you can transfer data async in both directions (client -> host, host -> client).
 
 On the host:
+
 ```dart
   // Open a port and create a socket
 
@@ -165,18 +178,19 @@ On the host:
       }
     });
 
-    // Write data to the client using the _socket.write(UInt8List) or `_socket.writeString("Hello")` method 
+    // Write data to the client using the _socket.write(UInt8List) or `_socket.writeString("Hello")` method
 
-    
+
     print("_openPort done");
 
     // accept a connection on the created socket
     await FlutterP2p.acceptPort(port);
     print("_accept done");
   }
-``` 
+```
 
 On the client:
+
 ```dart
   // Connect to the port and create a socket
 
@@ -202,9 +216,9 @@ On the client:
         buffer = "";
       }
     });
-    
-    // Write data to the host using the _socket.write(UInt8List) or `_socket.writeString("Hello")` method 
+
+    // Write data to the host using the _socket.write(UInt8List) or `_socket.writeString("Hello")` method
 
     print("_connectToPort done");
   }
-``` 
+```
