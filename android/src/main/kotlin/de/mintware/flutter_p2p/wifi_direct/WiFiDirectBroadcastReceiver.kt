@@ -26,7 +26,8 @@ class WiFiDirectBroadcastReceiver(private val manager: WifiP2pManager,
                                   private val stateChangedSink: EventChannel.EventSink?,
                                   peersChangedSink: EventChannel.EventSink?,
                                   private val connectionChangedSink: EventChannel.EventSink?,
-                                  private val thisDeviceChangedSink: EventChannel.EventSink?
+                                  private val thisDeviceChangedSink: EventChannel.EventSink?,
+                                  private val discoveryChangedSink: EventChannel.EventSink?
 ) : BroadcastReceiver() {
 
     private val peerListListener = WiFiDirectPeerListListener(peersChangedSink);
@@ -41,6 +42,7 @@ class WiFiDirectBroadcastReceiver(private val manager: WifiP2pManager,
             WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION -> onPeersChanged()
             WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION -> onConnectionChanged(intent)
             WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION -> onThisDeviceChanged(intent)
+            WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION -> onDiscoveryChanged(intent)
         }
     }
 
@@ -91,5 +93,11 @@ class WiFiDirectBroadcastReceiver(private val manager: WifiP2pManager,
         val device = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE) as WifiP2pDevice
         val dev: Protos.WifiP2pDevice = ProtoHelper.create(device);
         thisDeviceChangedSink?.success(dev.toByteArray())
+    }
+
+    private fun onDiscoveryChanged(intent: Intent) {
+        val discoveryState = intent.getIntExtra(WifiP2pManager.EXTRA_DISCOVERY_STATE, WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED);
+        val stateChange: Protos.DiscoveryStateChange = ProtoHelper.create(discoveryState);
+        discoveryChangedSink?.success(stateChange.toByteArray());
     }
 }

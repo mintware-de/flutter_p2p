@@ -25,10 +25,14 @@ class WiFiDirectBroadcastReceiver {
   static EventChannel _thisDeviceChangeChannel =
       EventChannel("$_channelBase/bc/this-device-change");
 
+  static EventChannel _discoveryChangeChannel =
+      EventChannel("$_channelBase/bc/discovery-change");
+
   static Stream<StateChange> _stateChangeStream;
   static Stream<WifiP2pDeviceList> _peersChangeStream;
   static Stream<ConnectionChange> _connectionChangeStream;
   static Stream<WifiP2pDevice> _thisDeviceChangeStream;
+  static Stream<DiscoveryStateChange> _discoveryChangeStream;
 
   Stream<StateChange> get stateChange {
     if (_stateChangeStream == null) {
@@ -68,5 +72,16 @@ class WiFiDirectBroadcastReceiver {
     }
 
     return _thisDeviceChangeStream;
+  }
+
+  Stream<DiscoveryStateChange> get discoveryChange {
+    if (_discoveryChangeStream == null) {
+      _discoveryChangeStream = _discoveryChangeChannel
+          .receiveBroadcastStream()
+          .map<DiscoveryStateChange>(
+              (src) => DiscoveryStateChange.fromBuffer(src));
+    }
+
+    return _discoveryChangeStream;
   }
 }
