@@ -13,6 +13,7 @@ package de.mintware.flutter_p2p.utility
 import android.net.NetworkInfo
 import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pInfo
+import android.net.wifi.p2p.WifiP2pManager
 import com.google.protobuf.ByteString
 import de.mintware.flutter_p2p.Protos
 
@@ -22,6 +23,12 @@ class ProtoHelper {
             return Protos.StateChange.newBuilder()
                     .setIsEnabled(isEnabled)
                     .build()
+        }
+
+        fun create(discoveryState: Int) : Protos.DiscoveryStateChange {
+            return Protos.DiscoveryStateChange.newBuilder()
+                    .setIsDiscovering(discoveryState != WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED)
+                    .build();
         }
 
         fun create(device: WifiP2pDevice): Protos.WifiP2pDevice {
