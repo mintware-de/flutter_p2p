@@ -183,6 +183,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   : null,
               child: Text("Send hello world"),
             ),
+            RaisedButton(
+              onPressed: _isConnected ? () => FlutterP2p.removeGroup() : null,
+              child: Text("Disconnect"),
+            ),
             Expanded(
               child: ListView(
                 children: this.devices.map((d) {
