@@ -193,3 +193,10 @@ const SocketMessage$json = const {
     const {'1': 'data', '3': 3, '4': 1, '5': 12, '10': 'data'},
   ],
 };
+
+const DiscoveryStateChange$json = const {
+  '1': 'DiscoveryStateChange',
+  '2': const [
+    const {'1': 'isDiscovering', '3': 1, '4': 1, '5': 8, '10': 'isDiscovering'},
+  ],
+};

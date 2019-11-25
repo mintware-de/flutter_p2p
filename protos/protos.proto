@@ -82,3 +82,7 @@ message SocketMessage {
     int32 dataAvailable = 2; // The number of bytes which are still available
     bytes data = 3; // The data
 }
+
+message DiscoveryStateChange {
+    bool isDiscovering = 1;
+}
