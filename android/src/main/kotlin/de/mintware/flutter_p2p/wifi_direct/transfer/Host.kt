@@ -23,7 +23,7 @@ class Host(val serverSocket: ServerSocket,
 
         try {
             socket = serverSocket.accept()
-            handler = SocketHandler(socket, true);
+            handler = SocketHandler(socket, true)
             handler.handleInput { data -> publishProgress(data) }
         } catch (e: Exception) {
             e.printStackTrace()

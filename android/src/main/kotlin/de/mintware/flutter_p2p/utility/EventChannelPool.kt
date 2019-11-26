@@ -18,34 +18,26 @@ import java.lang.Error
 class EventChannelPool(private val messenger: BinaryMessenger
 ) {
     private val base = "de.mintware.flutter_p2p"
-    private val eventChannels = HashMap<String, StreamHandler>();
+    private val eventChannels = HashMap<String, StreamHandler>()
 
     fun register(name: String): StreamHandler {
         if (isRegistered(name)) {
-            throw Error("A channel with this name already exists.");
+            throw Error("A channel with this name already exists.")
         }
 
         val channel = EventChannel(messenger, "${base}/${name}")
-        eventChannels[name] = StreamHandler.createForChannel(channel);
-        return eventChannels[name]!!;
-    }
-
-    fun unregister(name: String) {
-        if (!isRegistered(name)) {
-            throw Error("A channel with this name does not exist.");
-        }
-
-        eventChannels.remove(name);
+        eventChannels[name] = StreamHandler.createForChannel(channel)
+        return eventChannels[name]!!
     }
 
     fun getHandler(name: String): StreamHandler {
         if (!isRegistered(name)) {
-            throw Error("A channel with this name does not exist.");
+            throw Error("A channel with this name does not exist.")
         }
-        return eventChannels[name]!!;
+        return eventChannels[name]!!
     }
 
-    fun isRegistered(name: String): Boolean {
-        return eventChannels.containsKey(name);
+    private fun isRegistered(name: String): Boolean {
+        return eventChannels.containsKey(name)
     }
 }

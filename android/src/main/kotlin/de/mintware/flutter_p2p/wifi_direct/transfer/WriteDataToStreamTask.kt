@@ -20,7 +20,7 @@ class WriteDataToStreamTask(private val stream: OutputStream,
     override fun doInBackground(vararg params: Void?): Boolean {
         stream.write(bytes)
         stream.flush()
-        return true;
+        return true
     }
 
 }
