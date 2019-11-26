@@ -65,6 +65,10 @@ class FlutterP2p {
     return await _channel.invokeMethod("cancelConnect", {});
   }
 
+  static Future<bool> removeGroup() async {
+    return await _channel.invokeMethod("removeGroup", {});
+  }
+
   //endregion
 
   //region Host Advertising
