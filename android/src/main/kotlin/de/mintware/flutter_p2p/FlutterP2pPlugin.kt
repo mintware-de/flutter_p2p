@@ -20,7 +20,6 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.IntentFilter
 import android.net.wifi.p2p.WifiP2pManager
-import android.net.wifi.p2p.WifiP2pGroup
 import android.os.Looper
 import android.util.Log
 import java.lang.reflect.Method
@@ -28,6 +27,7 @@ import java.util.HashMap
 import android.content.pm.PackageManager
 import android.net.wifi.p2p.WifiP2pConfig
 import de.mintware.flutter_p2p.utility.EventChannelPool
+import de.mintware.flutter_p2p.wifi_direct.ResultActionListener
 import de.mintware.flutter_p2p.wifi_direct.SocketPool
 import de.mintware.flutter_p2p.wifi_direct.WiFiDirectBroadcastReceiver
 
@@ -50,7 +50,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
         private const val CH_CON_CHANGE = "bc/connection-change"
         private const val CH_DEVICE_CHANGE = "bc/this-device-change"
         private const val CH_SOCKET_READ = "socket/read"
-        val config: Config = Config();
+        val config: Config = Config()
 
         @JvmStatic
         fun registerWith(registrar: Registrar) {
@@ -170,15 +170,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
      */
     @Suppress("unused", "UNUSED_PARAMETER")
     fun discover(call: MethodCall, result: Result) {
-        manager.discoverPeers(channel, object : WifiP2pManager.ActionListener {
-            override fun onSuccess() {
-                result.success(true)
-            }
-
-            override fun onFailure(reasonCode: Int) {
-                result.error(reasonCode.toString(), null, null)
-            }
-        })
+        manager.discoverPeers(channel, ResultActionListener(result))
     }
 
     /**
@@ -189,15 +181,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
      */
     @Suppress("unused", "UNUSED_PARAMETER")
     fun stopDiscover(call: MethodCall, result: Result) {
-        manager.stopPeerDiscovery(channel, object : WifiP2pManager.ActionListener {
-            override fun onSuccess() {
-                result.success(true)
-            }
-
-            override fun onFailure(reasonCode: Int) {
-                result.error(reasonCode.toString(), null, null)
-            }
-        })
+        manager.stopPeerDiscovery(channel, ResultActionListener(result))
     }
     //endregion
 
@@ -211,50 +195,24 @@ class FlutterP2pPlugin(private val registrar: Registrar
             deviceAddress = device.deviceAddress
         }
 
-        manager.connect(channel, config, object : WifiP2pManager.ActionListener {
-            override fun onSuccess() {
-                result.success(true)
-            }
-
-            override fun onFailure(reasonCode: Int) {
-                result.error(reasonCode.toString(), null, null)
-            }
-        })
+        manager.connect(channel, config, ResultActionListener(result))
     }
 
     @Suppress("unused", "UNUSED_PARAMETER")
     fun cancelConnect(call: MethodCall, result: Result) {
-        manager.cancelConnect(channel, object : WifiP2pManager.ActionListener {
-            override fun onSuccess() {
-                result.success(true)
-            }
-
-            override fun onFailure(reasonCode: Int) {
-                result.error(reasonCode.toString(), null, null)
-            }
-        })
+        manager.cancelConnect(channel, ResultActionListener(result))
     }
 
     @Suppress("unused", "UNUSED_PARAMETER")
     fun removeGroup(call: MethodCall, result: Result) {
-        manager.requestGroupInfo(channel, object : WifiP2pManager.GroupInfoListener {
-            override fun onGroupInfoAvailable(group: WifiP2pGroup) {
-                if (group != null) {
-                    manager.removeGroup(channel, object : WifiP2pManager.ActionListener {
-                        override fun onSuccess() {
-                            result.success(true)
-                        }
-            
-                        override fun onFailure(reasonCode: Int) {
-                            result.error(reasonCode.toString(), null, null)
-                        }
-                    })
-                } else {
-                    //signal success as the device is not currently a member of a group
-                    result.success(true)
-                }
+        manager.requestGroupInfo(channel) { group ->
+            if (group != null) {
+                manager.removeGroup(channel, ResultActionListener(result))
+            } else {
+                //signal success as the device is not currently a member of a group
+                result.success(true)
             }
-        })
+        }
     }
 
     //endregion
@@ -305,7 +263,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
     fun connectToHost(call: MethodCall, result: Result) {
         val address = call.argument<String>("address")
         val port = call.argument<Int>("port")
-        val timeout = call.argument<Int>("timeout") ?: FlutterP2pPlugin.config.timeout
+        val timeout = call.argument<Int>("timeout") ?: config.timeout
 
         if (port == null || address == null) {
             result.error("Invalid address or port given", null, null)

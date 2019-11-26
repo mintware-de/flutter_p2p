@@ -29,11 +29,11 @@ class WiFiDirectBroadcastReceiver(private val manager: WifiP2pManager,
                                   private val thisDeviceChangedSink: EventChannel.EventSink?
 ) : BroadcastReceiver() {
 
-    private val peerListListener = WiFiDirectPeerListListener(peersChangedSink);
+    private val peerListListener = WiFiDirectPeerListListener(peersChangedSink)
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent == null) {
-            return;
+            return
         }
 
         when (intent.action) {
@@ -48,11 +48,11 @@ class WiFiDirectBroadcastReceiver(private val manager: WifiP2pManager,
         val p2pInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_INFO) as WifiP2pInfo
         val networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO) as NetworkInfo
 
-        manager?.let { manager ->
+        manager.let { manager ->
 
             if (networkInfo.isConnected) {
 
-                manager.requestConnectionInfo(channel, WifiP2pManager.ConnectionInfoListener { info ->
+                manager.requestConnectionInfo(channel) { info ->
                     // InetAddress from WifiP2pInfo struct.
                     val groupOwnerAddress: String = info.groupOwnerAddress.hostAddress
 
@@ -68,7 +68,7 @@ class WiFiDirectBroadcastReceiver(private val manager: WifiP2pManager,
                         // to the group owner.
                     }
 
-                })
+                }
             }
         }
 
@@ -78,9 +78,9 @@ class WiFiDirectBroadcastReceiver(private val manager: WifiP2pManager,
     private fun onStateChanged(intent: Intent) {
         val state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1)
         val isConnected = state == WifiP2pManager.WIFI_P2P_STATE_ENABLED
-        val stateChange: Protos.StateChange = ProtoHelper.create(isConnected);
+        val stateChange: Protos.StateChange = ProtoHelper.create(isConnected)
 
-        stateChangedSink?.success(stateChange.toByteArray());
+        stateChangedSink?.success(stateChange.toByteArray())
     }
 
     private fun onPeersChanged() {
@@ -89,7 +89,7 @@ class WiFiDirectBroadcastReceiver(private val manager: WifiP2pManager,
 
     private fun onThisDeviceChanged(intent: Intent) {
         val device = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE) as WifiP2pDevice
-        val dev: Protos.WifiP2pDevice = ProtoHelper.create(device);
+        val dev: Protos.WifiP2pDevice = ProtoHelper.create(device)
         thisDeviceChangedSink?.success(dev.toByteArray())
     }
 }
