@@ -20,6 +20,7 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.IntentFilter
 import android.net.wifi.p2p.WifiP2pManager
+import android.net.wifi.p2p.WifiP2pGroup
 import android.os.Looper
 import android.util.Log
 import java.lang.reflect.Method
@@ -230,6 +231,28 @@ class FlutterP2pPlugin(private val registrar: Registrar
 
             override fun onFailure(reasonCode: Int) {
                 result.error(reasonCode.toString(), null, null)
+            }
+        })
+    }
+
+    @Suppress("unused", "UNUSED_PARAMETER")
+    fun removeGroup(call: MethodCall, result: Result) {
+        manager.requestGroupInfo(channel, object : WifiP2pManager.GroupInfoListener {
+            override fun onGroupInfoAvailable(group: WifiP2pGroup) {
+                if (group != null) {
+                    manager.removeGroup(channel, object : WifiP2pManager.ActionListener {
+                        override fun onSuccess() {
+                            result.success(true)
+                        }
+            
+                        override fun onFailure(reasonCode: Int) {
+                            result.error(reasonCode.toString(), null, null)
+                        }
+                    })
+                } else {
+                    //signal success as the device is not currently a member of a group
+                    result.success(true)
+                }
             }
         })
     }
