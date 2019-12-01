@@ -18,12 +18,12 @@ import java.net.Socket
 class SocketHandler(private val socket: Socket,
                     private val isHost: Boolean
 ) {
-    private val inputStream: InputStream = socket.getInputStream();
+    private val inputStream: InputStream = socket.getInputStream()
 
     fun handleInput(cb: (data: ByteArray) -> Unit) {
         val buf = ByteArray(FlutterP2pPlugin.config.bufferSize)
 
-        var readCount = 0;
+        var readCount = 0
 
         val port = if (isHost) socket.localPort else (socket.port)
         while ({ readCount = inputStream.read(buf);readCount }() != -1) {

@@ -34,7 +34,7 @@ class WiFiDirectPeerListListener(private val peersChangedSink: EventChannel.Even
                 peers.addAll(refreshedPeers)
             }
 
-            peersChangedSink?.success(ProtoHelper.create(peers).toByteArray());
+            peersChangedSink?.success(ProtoHelper.create(peers).toByteArray())
         }
 
         if (peers.isEmpty()) {
