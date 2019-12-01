@@ -11,6 +11,6 @@
 package de.mintware.flutter_p2p
 
 class Config {
-    var bufferSize: Int = 1024;
-    var timeout: Int = 500;
+    var bufferSize: Int = 1024
+    var timeout: Int = 500
 }

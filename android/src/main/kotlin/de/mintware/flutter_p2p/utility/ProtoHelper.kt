@@ -36,20 +36,20 @@ class ProtoHelper {
                     .setPrimaryDeviceType(device.primaryDeviceType ?: "")
                     .setSecondaryDeviceType(device.secondaryDeviceType ?: "")
                     .setStatusValue(device.status)
-                    .build();
+                    .build()
         }
 
         fun create(devices: List<WifiP2pDevice>): Protos.WifiP2pDeviceList {
             return Protos.WifiP2pDeviceList.newBuilder()
                     .addAllDevices(devices.map(Companion::create))
-                    .build();
+                    .build()
         }
 
         fun create(p2pInfo: WifiP2pInfo, networkInfo: NetworkInfo): Protos.ConnectionChange {
             return Protos.ConnectionChange.newBuilder()
                     .setWifiP2PInfo(create(p2pInfo))
                     .setNetworkInfo(create(networkInfo))
-                    .build();
+                    .build()
         }
 
         fun create(p2pInfo: WifiP2pInfo): Protos.WifiP2pInfo {
@@ -57,7 +57,7 @@ class ProtoHelper {
                     .setGroupFormed(p2pInfo.groupFormed)
                     .setIsGroupOwner(p2pInfo.isGroupOwner)
                     .setGroupOwnerAddress(p2pInfo.groupOwnerAddress?.hostAddress ?: "")
-                    .build();
+                    .build()
         }
 
         fun create(networkInfo: NetworkInfo): Protos.NetworkInfo {
@@ -66,7 +66,7 @@ class ProtoHelper {
                     .setIsConnected(networkInfo.isConnected)
                     .setDetailedStateValue(networkInfo.detailedState.ordinal)
                     .setExtraInfo(networkInfo.extraInfo ?: "")
-                    .build();
+                    .build()
         }
 
         fun create(port: Int, data: ByteArray, dataAvailable: Int): Protos.SocketMessage {
@@ -74,7 +74,7 @@ class ProtoHelper {
                     .setData(ByteString.copyFrom(data))
                     .setPort(port)
                     .setDataAvailable(dataAvailable)
-                    .build();
+                    .build()
         }
 
     }

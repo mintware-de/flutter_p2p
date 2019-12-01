@@ -25,10 +25,10 @@ abstract class SocketTask(private val inputStreamHandler: StreamHandler) : Async
     fun writeToOutput(bytes: ByteArray): Boolean {
         try {
             val task = WriteDataToStreamTask(socket.getOutputStream(), bytes)
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            task.executeOnExecutor(THREAD_POOL_EXECUTOR)
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return true;
+        return true
     }
 }
