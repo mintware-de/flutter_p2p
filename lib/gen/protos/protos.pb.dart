@@ -572,3 +572,45 @@ class SocketMessage extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   void clearData() => clearField(3);
 }
+
+class DiscoveryStateChange extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo('DiscoveryStateChange', createEmptyInstance: create)
+        ..aOB(1, 'isDiscovering', protoName: 'isDiscovering')
+        ..hasRequiredFields = false;
+
+  DiscoveryStateChange._() : super();
+  factory DiscoveryStateChange() => create();
+  factory DiscoveryStateChange.fromBuffer($core.List<$core.int> i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(i, r);
+  factory DiscoveryStateChange.fromJson($core.String i,
+          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(i, r);
+  DiscoveryStateChange clone() =>
+      DiscoveryStateChange()..mergeFromMessage(this);
+  DiscoveryStateChange copyWith(void Function(DiscoveryStateChange) updates) =>
+      super.copyWith((message) => updates(message as DiscoveryStateChange));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static DiscoveryStateChange create() => DiscoveryStateChange._();
+  DiscoveryStateChange createEmptyInstance() => create();
+  static $pb.PbList<DiscoveryStateChange> createRepeated() =>
+      $pb.PbList<DiscoveryStateChange>();
+  @$core.pragma('dart2js:noInline')
+  static DiscoveryStateChange getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<DiscoveryStateChange>(create);
+  static DiscoveryStateChange _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get isDiscovering => $_getBF(0);
+  @$pb.TagNumber(1)
+  set isDiscovering($core.bool v) {
+    $_setBool(0, v);
+  }
+
+  @$pb.TagNumber(1)
+  $core.bool hasIsDiscovering() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearIsDiscovering() => clearField(1);
+}
