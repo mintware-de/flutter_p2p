@@ -86,6 +86,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       // Handle discovered peers
     }));
 
+    _subscriptions.add(FlutterP2p.wifiEvents.discoveryChange.listen((change) {
+      // Handle discovery state changes
+    }));
+
     FlutterP2p.register();  // Register to the native events which are send to the streams above
   }
 

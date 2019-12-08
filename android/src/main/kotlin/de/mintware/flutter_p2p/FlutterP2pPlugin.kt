@@ -49,6 +49,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
         private const val CH_PEERS_CHANGE = "bc/peers-change"
         private const val CH_CON_CHANGE = "bc/connection-change"
         private const val CH_DEVICE_CHANGE = "bc/this-device-change"
+        private const val CH_DISCOVERY_CHANGE = "bc/discovery-change"
         private const val CH_SOCKET_READ = "socket/read"
         val config: Config = Config()
 
@@ -73,6 +74,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
         eventPool.register(CH_CON_CHANGE)
         eventPool.register(CH_DEVICE_CHANGE)
         eventPool.register(CH_SOCKET_READ)
+        eventPool.register(CH_DISCOVERY_CHANGE)
 
         socketPool = SocketPool(eventPool.getHandler(CH_SOCKET_READ))
     }
@@ -87,6 +89,8 @@ class FlutterP2pPlugin(private val registrar: Registrar
             addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION)
             // Indicates this device'base details have changed.
             addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION)
+            // Indicates the state of peer discovery has changed
+            addAction(WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION)
         }
     }
 
@@ -136,7 +140,8 @@ class FlutterP2pPlugin(private val registrar: Registrar
                 eventPool.getHandler(CH_STATE_CHANGE).sink,
                 eventPool.getHandler(CH_PEERS_CHANGE).sink,
                 eventPool.getHandler(CH_CON_CHANGE).sink,
-                eventPool.getHandler(CH_DEVICE_CHANGE).sink
+                eventPool.getHandler(CH_DEVICE_CHANGE).sink,
+                eventPool.getHandler(CH_DISCOVERY_CHANGE).sink
         )
         registrar.context().registerReceiver(receiver, intentFilter)
         result.success(true)
