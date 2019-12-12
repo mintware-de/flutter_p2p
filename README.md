@@ -11,13 +11,16 @@ This plugin is in alpha and only supports android at the moment.
 
 ### Required permissions
 
-- `android.permission.CHANGE_WIFI_STATE`
-- `android.permission.ACCESS_FINE_LOCATION`
-- `android.permission.ACCESS_COARSE_LOCATION`
-- `android.permission.CHANGE_NETWORK_STATE`
-- `android.permission.INTERNET`
-- `android.permission.ACCESS_NETWORK_STATE`
-- `android.permission.ACCESS_WIFI_STATE`
+Put this into your AndroidManifest.xml
+```xml
+<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+```
 
 ### Request permission
 
