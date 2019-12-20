@@ -36,7 +36,7 @@ android {
         main.proto.srcDirs += '../protos'
     }
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion 16
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
