@@ -1,6 +1,6 @@
 name: flutter_p2p
 description: A WiFi Direct Plugin for Flutter. This Plugin uses the native WiFi P2P API of Android.
-version: 0.1.0
+version: 0.1.1
 author: Julian Finkler <julian@mintware.de>
 homepage: https://www.mintware.de
 repository: https://github.com/mintware-de/flutter_p2p
