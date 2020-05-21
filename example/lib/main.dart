@@ -174,7 +174,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               child: Text("Connect to port 8888"),
             ),
             RaisedButton(
-              onPressed: _socket != null ? () => _socket.writeString("Hello World") : null,
+              onPressed: _isConnected ? () => _socket.writeString("Hello World") : null,
               child: Text("Send hello world"),
             ),
             RaisedButton(
