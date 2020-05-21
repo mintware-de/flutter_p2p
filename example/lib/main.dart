@@ -111,14 +111,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       var msg = String.fromCharCodes(data.data);
       buffer += msg;
       if (data.dataAvailable == 0) {
-        snackBar("Data Received: $buffer");
+        snackBar("Data Received from ${_isHost ? "Client" : "Host"}: $buffer");
         socket.writeString("Successfully received: $buffer");
         buffer = "";
       }
     });
 
     print("_openPort done");
-
     await FlutterP2p.acceptPort(port);
     print("_accept done");
   }
@@ -136,7 +135,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     _socket.inputStream.listen((data) {
       var msg = utf8.decode(data.data);
-      snackBar("Received from Host $msg");
+      snackBar("Received from ${_isHost ? "Host" : "Client"} $msg");
     });
 
     print("_connectToPort done");
@@ -150,6 +149,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return true;
   }
 
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -168,23 +168,28 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             Divider(),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Controller",style: Theme.of(context).textTheme.headline5,),
+              child: Text(
+                "Controller",
+                style: Theme.of(context).textTheme.headline5,
+              ),
             ),
             ListTile(
               title: Text("Discover Devices"),
               onTap: () async {
-                await FlutterP2p.discoverDevices();
+                if (!_isConnected) await FlutterP2p.discoverDevices();
               },
             ),
             Divider(),
             ListTile(
               title: Text("Open and accept data from port 8888"),
-              onTap:_isConnected && _isHost ? () => _openPortAndAccept(8888) : null,
+              subtitle: _isConnected ? Text("Active") : Text("Disable"),
+              onTap: _isConnected && _isHost ? () => _openPortAndAccept(8888) : null,
             ),
             Divider(),
             ListTile(
               title: Text("Connect to port 8888"),
-              onTap: _isConnected ? () => _connectToPort(8888) : null,
+              subtitle: Text("This is able to only Client"),
+              onTap: _isConnected &&!_isHost ? () => _connectToPort(8888) : null,
             ),
             Divider(),
             ListTile(
@@ -194,13 +199,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             Divider(),
             ListTile(
               title: Text("Disconnect"),
-              onTap:_isConnected ? () async => await FlutterP2p.removeGroup() : null,
+              onTap: _isConnected ? () async => await FlutterP2p.removeGroup() : null,
             ),
             Divider(),
-
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Device List",style: Theme.of(context).textTheme.headline5,),
+              child: Text(
+                "Device List",
+                style: Theme.of(context).textTheme.headline5,
+              ),
             ),
             Expanded(
               child: ListView(
