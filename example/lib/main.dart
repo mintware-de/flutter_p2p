@@ -28,6 +28,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   var _deviceAddress = "";
   var _isConnected = false;
   var _isHost = false;
+  var _isOpen = false;
+
 
   P2pSocket _socket;
   List<WifiP2pDevice> devices = [];
@@ -101,25 +103,27 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   void _openPortAndAccept(int port) async {
-    var socket = await FlutterP2p.openHostPort(port);
-    setState(() {
-      _socket = socket;
-    });
+    if(!_isOpen){
+      var socket = await FlutterP2p.openHostPort(port);
+      setState(() {
+        _socket = socket;
+      });
 
-    var buffer = "";
-    socket.inputStream.listen((data) {
-      var msg = String.fromCharCodes(data.data);
-      buffer += msg;
-      if (data.dataAvailable == 0) {
-        snackBar("Data Received from ${_isHost ? "Client" : "Host"}: $buffer");
-        socket.writeString("Successfully received: $buffer");
-        buffer = "";
-      }
-    });
+      var buffer = "";
+      socket.inputStream.listen((data) {
+        var msg = String.fromCharCodes(data.data);
+        buffer += msg;
+        if (data.dataAvailable == 0) {
+          snackBar("Data Received from ${_isHost ? "Client" : "Host"}: $buffer");
+          socket.writeString("Successfully received: $buffer");
+          buffer = "";
+        }
+      });
 
-    print("_openPort done");
-    await FlutterP2p.acceptPort(port);
-    print("_accept done");
+      print("_openPort done");
+      _isOpen = await FlutterP2p.acceptPort(port);
+      print("_accept done: $_isOpen");
+    }
   }
 
   _connectToPort(int port) async {
@@ -149,7 +153,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return true;
   }
 
-  
+  Future<bool> _disconnect() async{
+    bool result = await FlutterP2p.removeGroup();
+    _socket = null;
+    if(result) _isOpen = false;
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -177,6 +187,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               title: Text("Discover Devices"),
               onTap: () async {
                 if (!_isConnected) await FlutterP2p.discoverDevices();
+                else return;
               },
             ),
             Divider(),
@@ -199,7 +210,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             Divider(),
             ListTile(
               title: Text("Disconnect"),
-              onTap: _isConnected ? () async => await FlutterP2p.removeGroup() : null,
+              onTap: _isConnected ? () async => await _disconnect() : null,
             ),
             Divider(),
             Padding(
