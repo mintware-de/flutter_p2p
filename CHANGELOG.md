@@ -1,7 +1,14 @@
 ## Next version
 
+Features:
+- Migrated plugin and example to AndroidX. Thanks to [SteffNite](https://github.com/SteffNite) [PR#10](https://github.com/mintware-de/flutter_p2p/pull/8)
+
 Optimizations:
 - Enhancement Example App. Thanks to [JAICHANGPARK](https://github.com/JAICHANGPARK) [PR#10](https://github.com/mintware-de/flutter_p2p/pull/10)
+
+Misc:
+- .idea directory removed from the git history
+- pubspec.lock removed since this a library package
 
 ## 0.1.1
 
