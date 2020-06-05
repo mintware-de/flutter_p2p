@@ -24,6 +24,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  var _deviceAddress = "";
+  var _isConnected = false;
+  var _isHost = false;
+  var _isOpen = false;
+
+
+  P2pSocket _socket;
+  List<WifiP2pDevice> devices = [];
+  List<StreamSubscription> _subscriptions = [];
+
   @override
   void initState() {
     super.initState();
@@ -46,13 +57,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
   }
 
-  List<WifiP2pDevice> devices = [];
-
-  var _isConnected = false;
-  var _isHost = false;
-
-  List<StreamSubscription> _subscriptions = [];
-
   void _register() async {
     if (!await _checkPermission()) {
       return;
@@ -67,8 +71,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         _isHost = change.wifiP2pInfo.isGroupOwner;
         _deviceAddress = change.wifiP2pInfo.groupOwnerAddress;
       });
-      print(
-          "connectionChange: ${change.wifiP2pInfo.isGroupOwner}, Connected: ${change.networkInfo.isConnected}");
+      print("connectionChange: ${change.wifiP2pInfo.isGroupOwner}, Connected: ${change.networkInfo.isConnected}");
     }));
 
     _subscriptions.add(FlutterP2p.wifiEvents.thisDeviceChange.listen((change) {
@@ -99,31 +102,29 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     FlutterP2p.unregister();
   }
 
-  P2pSocket _socket;
   void _openPortAndAccept(int port) async {
-    var socket = await FlutterP2p.openHostPort(port);
-    setState(() {
-      _socket = socket;
-    });
+    if(!_isOpen){
+      var socket = await FlutterP2p.openHostPort(port);
+      setState(() {
+        _socket = socket;
+      });
 
-    var buffer = "";
-    socket.inputStream.listen((data) {
-      var msg = String.fromCharCodes(data.data);
-      buffer += msg;
-      if (data.dataAvailable == 0) {
-        snackBar("Data Received: $buffer");
-        socket.writeString("Successfully received: $buffer");
-        buffer = "";
-      }
-    });
+      var buffer = "";
+      socket.inputStream.listen((data) {
+        var msg = String.fromCharCodes(data.data);
+        buffer += msg;
+        if (data.dataAvailable == 0) {
+          snackBar("Data Received from ${_isHost ? "Client" : "Host"}: $buffer");
+          socket.writeString("Successfully received: $buffer");
+          buffer = "";
+        }
+      });
 
-    print("_openPort done");
-
-    await FlutterP2p.acceptPort(port);
-    print("_accept done");
+      print("_openPort done");
+      _isOpen = await FlutterP2p.acceptPort(port);
+      print("_accept done: $_isOpen");
+    }
   }
-
-  var _deviceAddress = "";
 
   _connectToPort(int port) async {
     var socket = await FlutterP2p.connectToHost(
@@ -138,7 +139,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     _socket.inputStream.listen((data) {
       var msg = utf8.decode(data.data);
-      snackBar("Received from Host: $msg");
+      snackBar("Received from ${_isHost ? "Host" : "Client"} $msg");
     });
 
     print("_connectToPort done");
@@ -152,7 +153,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return true;
   }
 
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  Future<bool> _disconnect() async{
+    bool result = await FlutterP2p.removeGroup();
+    _socket = null;
+    if(result) _isOpen = false;
+    return result;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,33 +169,56 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           title: const Text('Plugin example app 2'),
         ),
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(_isConnected
-                ? "Connected: ${_isHost ? "Host" : "Client"}"
-                : "Disconnected"),
-            RaisedButton(
-              onPressed: () => FlutterP2p.discoverDevices(),
-              child: Text("Discover Devices"),
+            ListTile(
+              title: Text("Connection State"),
+              subtitle: Text(_isConnected ? "Connected: ${_isHost ? "Host" : "Client"}" : "Disconnected"),
             ),
-            RaisedButton(
-              onPressed: _isConnected && _isHost
-                  ? () => _openPortAndAccept(8888)
-                  : null,
-              child: Text("Open and accept data from port 8888"),
+            Divider(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Controller",
+                style: Theme.of(context).textTheme.headline5,
+              ),
             ),
-            RaisedButton(
-              onPressed: _isConnected ? () => _connectToPort(8888) : null,
-              child: Text("Connect to port 8888"),
+            ListTile(
+              title: Text("Discover Devices"),
+              onTap: () async {
+                if (!_isConnected) await FlutterP2p.discoverDevices();
+                else return;
+              },
             ),
-            RaisedButton(
-              onPressed: _socket != null
-                  ? () => _socket.writeString("Hello World")
-                  : null,
-              child: Text("Send hello world"),
+            Divider(),
+            ListTile(
+              title: Text("Open and accept data from port 8888"),
+              subtitle: _isConnected ? Text("Active") : Text("Disable"),
+              onTap: _isConnected && _isHost ? () => _openPortAndAccept(8888) : null,
             ),
-            RaisedButton(
-              onPressed: _isConnected ? () => FlutterP2p.removeGroup() : null,
-              child: Text("Disconnect"),
+            Divider(),
+            ListTile(
+              title: Text("Connect to port 8888"),
+              subtitle: Text("This is able to only Client"),
+              onTap: _isConnected &&!_isHost ? () => _connectToPort(8888) : null,
+            ),
+            Divider(),
+            ListTile(
+              title: Text("Send hello world"),
+              onTap: _isConnected ? () async => await _socket.writeString("Hello World") : null,
+            ),
+            Divider(),
+            ListTile(
+              title: Text("Disconnect"),
+              onTap: _isConnected ? () async => await _disconnect() : null,
+            ),
+            Divider(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Device List",
+                style: Theme.of(context).textTheme.headline5,
+              ),
             ),
             Expanded(
               child: ListView(
@@ -198,11 +227,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     title: Text(d.deviceName),
                     subtitle: Text(d.deviceAddress),
                     onTap: () {
-                      print(
-                          "${_isConnected ? "Disconnect" : "Connect"} to device: $_deviceAddress");
-                      return _isConnected
-                          ? FlutterP2p.cancelConnect(d)
-                          : FlutterP2p.connect(d);
+                      print("${_isConnected ? "Disconnect" : "Connect"} to device: $_deviceAddress");
+                      return _isConnected ? FlutterP2p.cancelConnect(d) : FlutterP2p.connect(d);
                     },
                   );
                 }).toList(),
