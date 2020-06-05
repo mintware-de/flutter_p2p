@@ -26,6 +26,7 @@ import java.lang.reflect.Method
 import java.util.HashMap
 import android.content.pm.PackageManager
 import android.net.wifi.p2p.WifiP2pConfig
+import androidx.annotation.Keep
 import de.mintware.flutter_p2p.utility.EventChannelPool
 import de.mintware.flutter_p2p.wifi_direct.ResultActionListener
 import de.mintware.flutter_p2p.wifi_direct.SocketPool
@@ -105,6 +106,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
 
     //region Permissions
 
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     private fun requestLocationPermission(call: MethodCall, result: Result) {
         val perm = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -112,6 +114,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
         result.success(true)
     }
 
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     private fun isLocationPermissionGranted(call: MethodCall, result: Result) {
         val permission = Manifest.permission.ACCESS_FINE_LOCATION
@@ -127,6 +130,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
      * @param call The Method call
      * @param result The Method result
      */
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     fun register(call: MethodCall, result: Result) {
         if (receiver != null) {
@@ -153,6 +157,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
      * @param call The Method call
      * @param result The Method result
      */
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     fun unregister(call: MethodCall, result: Result) {
         if (receiver == null) {
@@ -173,6 +178,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
      * @param call The Method call
      * @param result The Method result
      */
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     fun discover(call: MethodCall, result: Result) {
         manager.discoverPeers(channel, ResultActionListener(result))
@@ -184,6 +190,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
      * @param call The Method call
      * @param result The Method result
      */
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     fun stopDiscover(call: MethodCall, result: Result) {
         manager.stopPeerDiscovery(channel, ResultActionListener(result))
@@ -192,6 +199,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
 
     //region Connection
 
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     fun connect(call: MethodCall, result: Result) {
         val device = Protos.WifiP2pDevice.parseFrom(call.argument<ByteArray>("payload"))
@@ -203,11 +211,13 @@ class FlutterP2pPlugin(private val registrar: Registrar
         manager.connect(channel, config, ResultActionListener(result))
     }
 
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     fun cancelConnect(call: MethodCall, result: Result) {
         manager.cancelConnect(channel, ResultActionListener(result))
     }
 
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     fun removeGroup(call: MethodCall, result: Result) {
         manager.requestGroupInfo(channel) { group ->
@@ -224,6 +234,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
 
     //region Host Advertising
 
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     fun openHostPort(call: MethodCall, result: Result) {
         val port = call.argument<Int>("port")
@@ -236,6 +247,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
         result.success(true)
     }
 
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     fun closeHostPort(call: MethodCall, result: Result) {
         val port = call.argument<Int>("port")
@@ -248,6 +260,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
         result.success(true)
     }
 
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     fun acceptPort(call: MethodCall, result: Result) {
         val port = call.argument<Int>("port")
@@ -264,6 +277,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
 
     //region Client Connection
 
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     fun connectToHost(call: MethodCall, result: Result) {
         val address = call.argument<String>("address")
@@ -279,6 +293,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
         result.success(true)
     }
 
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     fun disconnectFromHost(call: MethodCall, result: Result) {
         val port = call.argument<Int>("port")
@@ -293,6 +308,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
 
     //region Data Transfer
 
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     fun sendDataToHost(call: MethodCall, result: Result) {
         val socketMessage = Protos.SocketMessage.parseFrom(call.argument<ByteArray>("payload"))
@@ -301,6 +317,7 @@ class FlutterP2pPlugin(private val registrar: Registrar
         result.success(true)
     }
 
+    @Keep
     @Suppress("unused", "UNUSED_PARAMETER")
     fun sendDataToClient(call: MethodCall, result: Result) {
         val socketMessage = Protos.SocketMessage.parseFrom(call.argument<ByteArray>("payload"))
