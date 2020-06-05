@@ -6,6 +6,9 @@ Features:
 Optimizations:
 - Enhancement Example App. Thanks to [JAICHANGPARK](https://github.com/JAICHANGPARK) [PR#10](https://github.com/mintware-de/flutter_p2p/pull/10)
 
+Fixes:
+- Added @Keep annotation to fix "Failed to handle method call" [PR#12](https://github.com/mintware-de/flutter_p2p/pull/12)
+
 Misc:
 - .idea directory removed from the git history
 - pubspec.lock removed since this a library package
