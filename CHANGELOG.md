@@ -1,6 +1,7 @@
 ## Next version
 
-No changes yet
+Optimizations:
+- Enhancement Example App. Thanks to [JAICHANGPARK](https://github.com/JAICHANGPARK) [PR#10](https://github.com/mintware-de/flutter_p2p/pull/10)
 
 ## 0.1.1
 
