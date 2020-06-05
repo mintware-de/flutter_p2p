@@ -1,4 +1,4 @@
-## Next version
+## 1.0.0
 
 Features:
 - Migrated plugin and example to AndroidX. Thanks to [SteffNite](https://github.com/SteffNite) [PR#10](https://github.com/mintware-de/flutter_p2p/pull/8)
@@ -12,6 +12,9 @@ Fixes:
 Misc:
 - .idea directory removed from the git history
 - pubspec.lock removed since this a library package
+- Minimum Dart Version updated to 2.3
+- Flutter updated
+- pubspec.yaml flutter.plugin.platforms updated
 
 ## 0.1.1
 
