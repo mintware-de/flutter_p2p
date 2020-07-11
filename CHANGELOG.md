@@ -8,6 +8,7 @@ Optimizations:
 
 Fixes:
 - Added @Keep annotation to fix "Failed to handle method call" [PR#12](https://github.com/mintware-de/flutter_p2p/pull/12)
+- Gradle task assembleDebug issue resolved & set min API level to 16. Thanks to [KamleshPandey98](https://github.com/KamleshPandey98) [PR#19](https://github.com/mintware-de/flutter_p2p/pull/19)
 
 Misc:
 - .idea directory removed from the git history
