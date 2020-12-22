@@ -21,7 +21,8 @@ class SocketPool(private val inputStreamHandler: StreamHandler) {
     private val hosts = mutableListOf<Host>()
 
     fun openSocket(port: Int): Host {
-        if (getHostByPort(port) != null) {
+        val h = getHostByPort(port);
+        if (h != null && !h.serverSocket.isClosed) {
             throw Exception("A socket with this port already exist")
         }
 
@@ -43,6 +44,7 @@ class SocketPool(private val inputStreamHandler: StreamHandler) {
         val socket: Host = getHostByPort(port)
                 ?: throw Exception("A socket with this port is not registered.")
         socket.serverSocket.close()
+        hosts.remove(socket);
     }
 
     fun connectToHost(address: String, port: Int, timeout: Int): Client {
