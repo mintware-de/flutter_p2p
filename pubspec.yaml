@@ -23,6 +23,7 @@ dev_dependencies:
 
 flutter:
   plugin:
-    android:
-      package: de.mintware.flutter_p2p
-      pluginClass: FlutterP2pPlugin
+    platforms:
+      android:
+        package: de.mintware.flutter_p2p
+        pluginClass: FlutterP2pPlugin
