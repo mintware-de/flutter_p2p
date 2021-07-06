@@ -14,15 +14,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
 flutter:
   plugin:
-    android:
-      package: de.mintware.flutter_p2p
-      pluginClass: FlutterP2pPlugin
+    platforms:
+      android:
+        package: de.mintware.flutter_p2p
+        pluginClass: FlutterP2pPlugin
